@@ -1,0 +1,1 @@
+"""Egypt Open Data API."""
