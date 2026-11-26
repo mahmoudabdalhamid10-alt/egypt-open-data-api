@@ -48,6 +48,8 @@ async def limit(request: Request, call_next):
     path = request.url.path
     if path.startswith("/v1/"):
         via_rapid = bool(PROXY_SECRET) and request.headers.get("x-rapidapi-proxy-secret") == PROXY_SECRET
+        if via_rapid and path.startswith("/v1/fuel") and request.headers.get("x-rapidapi-subscription", "").strip().lower() != "basic":
+            return JSONResponse({"error": "fuel data is not included in paid plans (source redistribution terms unverified); available on the free BASIC plan"}, status_code=403)
         if not via_rapid:
             ip = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "?")).split(",")[0].strip()
             day = dt.date.today().isoformat()
