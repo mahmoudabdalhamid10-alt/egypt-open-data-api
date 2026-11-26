@@ -1,0 +1,326 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Egypt Open Data API",
+  "description": "Clean JSON for public Egyptian data: official fuel prices, daily EGP reference rates, and World Bank macro series (inflation, GDP, population, unemployment, remittances). Every response names its source and license.",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/v1/sources": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "List Sources",
+    "description": "Every dataset with its source, license and refresh cadence.",
+    "operationId": "list_sources_v1_sources_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/fuel/latest": {
+   "get": {
+    "tags": [
+     "fuel"
+    ],
+    "summary": "Fuel Latest",
+    "description": "Current official pump prices (EGP) for gasoline 80/92/95, diesel, kerosene and LPG cylinder.",
+    "operationId": "fuel_latest_v1_fuel_latest_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/fuel/history": {
+   "get": {
+    "tags": [
+     "fuel"
+    ],
+    "summary": "Fuel History",
+    "description": "Daily snapshots we have recorded so far (grows every day).",
+    "operationId": "fuel_history_v1_fuel_history_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/fx/latest": {
+   "get": {
+    "tags": [
+     "fx"
+    ],
+    "summary": "Fx Latest",
+    "description": "EGP value of one unit of USD, EUR, GBP, SAR, AED and more.",
+    "operationId": "fx_latest_v1_fx_latest_get",
+    "parameters": [
+     {
+      "name": "symbols",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Comma list, e.g. USD,EUR,SAR",
+       "title": "Symbols"
+      },
+      "description": "Comma list, e.g. USD,EUR,SAR"
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/fx/{date}": {
+   "get": {
+    "tags": [
+     "fx"
+    ],
+    "summary": "Fx On",
+    "description": "Reference rates for a past date (YYYY-MM-DD).",
+    "operationId": "fx_on_v1_fx__date__get",
+    "parameters": [
+     {
+      "name": "date",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Date"
+      }
+     },
+     {
+      "name": "symbols",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Symbols"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/macro": {
+   "get": {
+    "tags": [
+     "macro"
+    ],
+    "summary": "Macro List",
+    "operationId": "macro_list_v1_macro_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/macro/{indicator}": {
+   "get": {
+    "tags": [
+     "macro"
+    ],
+    "summary": "Macro",
+    "description": "Yearly series for inflation, gdp_growth, gdp_per_capita, population, unemployment, remittances, official_exchange_rate.",
+    "operationId": "macro_v1_macro__indicator__get",
+    "parameters": [
+     {
+      "name": "indicator",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Indicator"
+      }
+     },
+     {
+      "name": "from_year",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "From Year"
+      }
+     },
+     {
+      "name": "to_year",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "To Year"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}
