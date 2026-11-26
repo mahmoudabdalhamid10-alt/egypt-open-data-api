@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>بيانات مصر المفتوحة | Egypt Open Data API</title>
+<meta name="description" content="أسعار الوقود الرسمية وأسعار الصرف والتضخم والتحويلات في مصر، جاهزة بصيغة JSON لأي تطبيق. Egypt's public data as one clean API.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--card:#0f1626;--line:#1e2a44;--text:#eaf0ff;--mute:#93a1c4;--lime:#c6ff3d;--gold:#ffc94d;--blue:#4da3ff}
+*{box-sizing:border-box;margin:0}
+body{font-family:Cairo,Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 85% -10%,rgba(198,255,61,.13),transparent 60%),radial-gradient(700px 500px at 0% 20%,rgba(77,163,255,.14),transparent 60%);pointer-events:none;z-index:-1}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{font-weight:900;font-size:20px;display:flex;gap:10px;align-items:center}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--lime),var(--gold));display:inline-block}
+.nav-r{display:flex;gap:10px;align-items:center}
+.btn{display:inline-block;padding:12px 22px;border-radius:12px;font-weight:800;border:1px solid var(--line);background:var(--card);cursor:pointer;font-family:inherit;color:var(--text);font-size:15px}
+.btn.p{background:var(--lime);color:#0a1200;border-color:var(--lime);box-shadow:0 0 40px rgba(198,255,61,.25)}
+.btn:hover{transform:translateY(-2px)}
+.hero{padding:60px 0 30px;text-align:center}
+.tag{display:inline-block;border:1px solid var(--line);background:rgba(15,22,38,.8);padding:6px 16px;border-radius:99px;color:var(--lime);font-weight:600;font-size:14px}
+h1{font-size:clamp(36px,6.5vw,72px);font-weight:900;line-height:1.15;margin:22px 0 16px}
+h1 b{background:linear-gradient(90deg,var(--lime),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(17px,2.2vw,22px);color:var(--mute);max-width:720px;margin:0 auto 28px}
+.live{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:44px 0 10px}
+.stat{background:linear-gradient(180deg,#121b30,var(--card));border:1px solid var(--line);border-radius:20px;padding:20px;text-align:start}
+.stat small{color:var(--mute);font-weight:600}
+.stat .n{font-size:38px;font-weight:900;direction:ltr;text-align:start;font-family:'JetBrains Mono',monospace;color:var(--lime);margin-top:4px}
+.stat .n span{font-size:15px;color:var(--mute);font-family:Cairo}
+.dot{display:inline-block;width:8px;height:8px;background:var(--lime);border-radius:50%;margin-inline-end:6px;animation:p 1.6s infinite}
+@keyframes p{50%{opacity:.25}}
+section{padding:70px 0}
+h2{font-size:clamp(28px,4vw,44px);font-weight:900;margin-bottom:10px}
+.lead{color:var(--mute);font-size:18px;max-width:700px;margin-bottom:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;transition:.2s}
+.card:hover{border-color:var(--lime);transform:translateY(-4px)}
+.card .ic{font-size:34px}
+.card h3{font-size:21px;font-weight:800;margin:8px 0 4px}
+.card p{color:var(--mute);font-size:15px}
+.card code{display:block;margin-top:12px;direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--blue)}
+.steps{counter-reset:s}
+.step{position:relative;padding-inline-start:70px;margin-bottom:22px}
+.step:before{counter-increment:s;content:counter(s);position:absolute;inset-inline-start:0;top:0;width:50px;height:50px;border-radius:15px;background:var(--lime);color:#0a1200;font-weight:900;font-size:24px;display:grid;place-items:center}
+.step h3{font-size:21px;font-weight:800}.step p{color:var(--mute)}
+.play{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabs button{padding:9px 16px;border-radius:10px;border:1px solid var(--line);background:#0b1120;color:var(--mute);cursor:pointer;font-family:inherit;font-weight:700}
+.tabs button.on{background:var(--lime);color:#0a1200;border-color:var(--lime)}
+pre{direction:ltr;text-align:left;background:#060a12;border:1px solid var(--line);border-radius:14px;padding:16px;overflow:auto;max-height:360px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#b9f26a}
+.url{direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);margin-bottom:10px}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.chart svg{width:100%;height:150px}
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.who .card{text-align:center}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.plan.hot{border-color:var(--lime);box-shadow:0 0 50px rgba(198,255,61,.12)}
+.plan h3{font-size:24px}.plan .pr{font-size:30px;font-weight:900;color:var(--lime);margin:6px 0}
+.plan li{list-style:none;color:var(--mute);padding:4px 0}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin-bottom:10px}
+summary{font-weight:800;cursor:pointer}details p{color:var(--mute);margin-top:8px}
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--mute);font-size:14px}
+[data-en]{display:none}
+html[lang=en] [data-en]{display:revert}html[lang=en] [data-ar]{display:none}
+html[lang=en]{direction:ltr}html[lang=en] body{direction:ltr}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+ <div class="logo"><i></i><span data-ar>بيانات مصر</span><span data-en>Egypt Data</span></div>
+ <div class="nav-r"><button class="btn" onclick="tgl()">EN / عربي</button><a class="btn p" href="#try"><span data-ar>جرّبها</span><span data-en>Try it</span></a></div>
+</nav>
+
+<header class="hero">
+ <span class="tag"><span class="dot"></span><span data-ar>داتا حية من مصادر رسمية ومفتوحة</span><span data-en>Live data from official and open sources</span></span>
+ <h1><span data-ar>داتا مصر كلها في <b>مكان واحد</b></span><span data-en>Egypt's data, in <b>one place</b></span></h1>
+ <p class="sub"><span data-ar>أسعار البنزين والدولار والتضخم والتحويلات، نضيفة وجاهزة لأي موقع أو تطبيق أو شيت. من غير ما تجمعها بنفسك.</span><span data-en>Fuel prices, exchange rates, inflation and remittances, clean and ready for any website, app or spreadsheet. No scraping needed.</span></p>
+ <a class="btn p" href="#try"><span data-ar>شوف الداتا الحية</span><span data-en>See live data</span></a>
+ <a class="btn" href="/docs" style="margin-inline-start:8px"><span data-ar>للمبرمجين: التوثيق</span><span data-en>Developers: docs</span></a>
+
+ <div class="live">
+  <div class="stat"><small><span data-ar>بنزين 92 (جنيه/لتر)</span><span data-en>Gasoline 92 (EGP/L)</span></small><div class="n" id="s-g92">…</div></div>
+  <div class="stat"><small><span data-ar>الدولار (جنيه)</span><span data-en>1 USD (EGP)</span></small><div class="n" id="s-usd">…</div></div>
+  <div class="stat"><small><span data-ar>التضخم السنوي</span><span data-en>Annual inflation</span></small><div class="n" id="s-inf">…</div></div>
+  <div class="stat"><small><span data-ar>تحويلات المصريين بالخارج</span><span data-en>Remittances to Egypt</span></small><div class="n" id="s-rem">…</div></div>
+ </div>
+ <p style="color:var(--mute);font-size:13px"><span data-ar>الأرقام فوق بتتجاب دلوقتي من الـ API نفسها. أول تحميل ممكن ياخد حوالي دقيقة.</span><span data-en>These numbers are fetched from the API right now. The first load can take about a minute.</span></p>
+</header>
+
+<section>
+ <h2><span data-ar>إيه اللي هتلاقيه؟</span><span data-en>What you get</span></h2>
+ <p class="lead"><span data-ar>كل رد فيه المصدر والترخيص مكتوبين، فأنت دايماً عارف الداتا جاية منين.</span><span data-en>Every response names its source and license, so you always know where the data comes from.</span></p>
+ <div class="grid">
+  <div class="card"><div class="ic">⛽</div><h3><span data-ar>أسعار الوقود الرسمية</span><span data-en>Official fuel prices</span></h3><p><span data-ar>بنزين 80/92/95 وسولار وكيروسين وأنبوبة البوتاجاز، من موقع وزارة البترول.</span><span data-en>Gasoline 80/92/95, diesel, kerosene and LPG cylinder, from the Ministry of Petroleum.</span></p><code>GET /v1/fuel/latest</code></div>
+  <div class="card"><div class="ic">💱</div><h3><span data-ar>أسعار الصرف اليومية</span><span data-en>Daily exchange rates</span></h3><p><span data-ar>12 عملة مقابل الجنيه، وأي يوم فات. سعر مرجعي وليس سعر البنك المركزي.</span><span data-en>12 currencies against the pound, for any past day. Reference rate, not the CBE rate.</span></p><code>GET /v1/fx/latest?symbols=USD,EUR</code></div>
+  <div class="card"><div class="ic">📈</div><h3><span data-ar>التضخم والنمو</span><span data-en>Inflation and growth</span></h3><p><span data-ar>التضخم السنوي ونمو الاقتصاد ودخل الفرد، سنة بسنة من البنك الدولي.</span><span data-en>Annual inflation, GDP growth and income per person, from the World Bank.</span></p><code>GET /v1/macro/inflation</code></div>
+  <div class="card"><div class="ic">👥</div><h3><span data-ar>السكان والبطالة</span><span data-en>Population and jobs</span></h3><p><span data-ar>عدد السكان ونسبة البطالة على مدى السنين.</span><span data-en>Population and unemployment over the years.</span></p><code>GET /v1/macro/population</code></div>
+  <div class="card"><div class="ic">✈️</div><h3><span data-ar>تحويلات المصريين بالخارج</span><span data-en>Remittances</span></h3><p><span data-ar>كام مليار دولار بيدخلوا مصر من المصريين اللي بره.</span><span data-en>How many billions of dollars Egyptians abroad send home.</span></p><code>GET /v1/macro/remittances</code></div>
+ </div>
+</section>
+
+<section>
+ <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+  <div class="chart"><b><span data-ar>التضخم في مصر (%)</span><span data-en>Egypt inflation (%)</span></b><svg id="c-inf" viewBox="0 0 400 150" preserveAspectRatio="none"></svg><small dir="ltr" style="color:var(--mute);display:block" id="c-inf-l"></small></div>
+  <div class="chart"><b><span data-ar>تحويلات المصريين (مليار $)</span><span data-en>Remittances ($B)</span></b><svg id="c-rem" viewBox="0 0 400 150" preserveAspectRatio="none"></svg><small dir="ltr" style="color:var(--mute);display:block" id="c-rem-l"></small></div>
+ </div>
+</section>
+
+<section>
+ <h2><span data-ar>مين يستفيد؟</span><span data-en>Who is it for?</span></h2>
+ <p class="lead"><span data-ar>أي حد محتاج رقم مصري موثوق ومحدّث، من غير شغل يدوي.</span><span data-en>Anyone who needs a trusted, current Egyptian number without manual work.</span></p>
+ <div class="who">
+  <div class="card"><div class="ic">👨‍💻</div><h3><span data-ar>مطورين</span><span data-en>Developers</span></h3><p><span data-ar>تطبيق أسعار أو بوت تليجرام من غير ما تكتب سكرابر.</span><span data-en>Build a price app or bot without writing a scraper.</span></p></div>
+  <div class="card"><div class="ic">📰</div><h3><span data-ar>صحفيين وباحثين</span><span data-en>Journalists and researchers</span></h3><p><span data-ar>داتا جاهزة للرسوم البيانية والتقارير.</span><span data-en>Ready data for charts and reports.</span></p></div>
+  <div class="card"><div class="ic">🏦</div><h3><span data-ar>شركات فينتك</span><span data-en>Fintech teams</span></h3><p><span data-ar>أسعار مرجعية مع تاريخها داخل منتجك.</span><span data-en>Reference rates with history inside your product.</span></p></div>
+  <div class="card"><div class="ic">📊</div><h3><span data-ar>طلبة وتحليل بيانات</span><span data-en>Students and analysts</span></h3><p><span data-ar>داتا حقيقية لمشاريع الـ Data Science.</span><span data-en>Real data for data science projects.</span></p></div>
+ </div>
+</section>
+
+<section id="try">
+ <h2><span data-ar>جرّب بنفسك</span><span data-en>Try it yourself</span></h2>
+ <p class="lead"><span data-ar>دوس على أي زر وشوف الرد الحقيقي دلوقتي.</span><span data-en>Click any button and see the real response right now.</span></p>
+ <div class="play">
+  <div class="tabs" id="tabs"></div>
+  <div class="url" id="purl"></div>
+  <pre id="pout">…</pre>
+ </div>
+</section>
+
+<section>
+ <h2><span data-ar>إزاي تبدأ؟</span><span data-en>How to start</span></h2>
+ <div class="steps" style="margin-top:20px">
+  <div class="step"><h3><span data-ar>جرّب مجاناً دلوقتي</span><span data-en>Try it free now</span></h3><p><span data-ar>من غير تسجيل: 100 طلب في اليوم. افتح أي رابط من اللي فوق.</span><span data-en>No signup: 100 requests per day. Open any link above.</span></p></div>
+  <div class="step"><h3><span data-ar>اربطها بمشروعك</span><span data-en>Connect it to your project</span></h3><p><span data-ar>أي لغة بتقدر تبعت طلب HTTP: بايثون، جافاسكريبت، إكسل، Google Sheets.</span><span data-en>Any language that can send an HTTP request: Python, JavaScript, Excel, Google Sheets.</span></p></div>
+  <div class="step"><h3><span data-ar>اشترك لما تكبر</span><span data-en>Subscribe when you grow</span></h3><p><span data-ar>الخطط المدفوعة (حدود أعلى ومفتاح خاص) هتتاح قريباً على RapidAPI.</span><span data-en>Paid plans (higher limits and a private key) are coming soon on RapidAPI.</span></p></div>
+ </div>
+</section>
+
+<section>
+ <h2><span data-ar>الخطط</span><span data-en>Plans</span></h2>
+ <div class="plans" style="margin-top:20px">
+  <div class="card plan hot"><h3><span data-ar>مجاني</span><span data-en>Free</span></h3><div class="pr">$0</div><ul><li>100 <span data-ar>طلب/يوم</span><span data-en>requests/day</span></li><li><span data-ar>كل الداتا</span><span data-en>All datasets</span></li><li><span data-ar>شغال الآن</span><span data-en>Available now</span></li></ul></div>
+  <div class="card plan"><h3>Pro</h3><div class="pr"><span data-ar>قريباً</span><span data-en>Soon</span></div><ul><li><span data-ar>حدود أعلى بكتير</span><span data-en>Much higher limits</span></li><li><span data-ar>مفتاح API خاص</span><span data-en>Private API key</span></li><li><span data-ar>على RapidAPI</span><span data-en>On RapidAPI</span></li></ul></div>
+  <div class="card plan"><h3>Business</h3><div class="pr"><span data-ar>قريباً</span><span data-en>Soon</span></div><ul><li><span data-ar>للشركات والاستخدام الكثيف</span><span data-en>For teams and heavy use</span></li><li><span data-ar>أولوية في الدعم</span><span data-en>Priority support</span></li></ul></div>
+ </div>
+</section>
+
+<section>
+ <h2><span data-ar>أسئلة سريعة</span><span data-en>Quick questions</span></h2>
+ <div style="margin-top:20px">
+  <details><summary><span data-ar>مين مصدر الداتا؟</span><span data-en>Where does the data come from?</span></summary><p><span data-ar>وزارة البترول (الوقود)، مصدر مفتوح CC0 (أسعار الصرف المرجعية)، والبنك الدولي CC BY 4.0 (الإحصائيات). التفاصيل في /v1/sources.</span><span data-en>The Ministry of Petroleum (fuel), an open CC0 source (reference exchange rates), and the World Bank CC BY 4.0 (statistics). Details at /v1/sources.</span></p></details>
+  <details><summary><span data-ar>ده سعر البنك المركزي؟</span><span data-en>Is this the Central Bank rate?</span></summary><p><span data-ar>لا. أسعار الصرف هنا مرجعية للمعلومة فقط، مش عرض شراء أو بيع من بنك. ومفيش أسعار سوق موازية.</span><span data-en>No. The exchange rates are indicative reference rates, not a bank quote. There are no parallel-market rates.</span></p></details>
+  <details><summary><span data-ar>ليه أول طلب بطيء؟</span><span data-en>Why is the first request slow?</span></summary><p><span data-ar>النسخة المجانية بتنام لما محدش يستخدمها، وبتصحى في حوالي دقيقة.</span><span data-en>The free version sleeps when idle and wakes in about a minute.</span></p></details>
+ </div>
+</section>
+</div>
+<footer><div class="wrap"><span data-ar>بيانات مصر المفتوحة. الداتا للمعلومة فقط وليست نصيحة مالية.</span><span data-en>Egypt Open Data API. Data is informational, not financial advice.</span> · <a href="https://github.com/mahmoudabdalhamid10-alt/egypt-open-data-api" style="color:var(--lime)">GitHub</a> · <a href="/docs" style="color:var(--lime)">API docs</a></div></footer>
+
+<script>
+const $=id=>document.getElementById(id);
+function tgl(){const h=document.documentElement;const en=h.lang!=='en';h.lang=en?'en':'ar';h.dir=en?'ltr':'rtl';}
+const j=async p=>(await fetch(p)).json();
+const fmt=(n,d=2)=>Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
+function spark(id,series,fmtv){const el=$(id);if(!series.length)return;const xs=series.map(s=>s.value);const mn=Math.min(...xs),mx=Math.max(...xs);const W=400,H=150,P=12;
+ const pts=series.map((s,i)=>[P+i*(W-2*P)/(series.length-1),H-P-((s.value-mn)/(mx-mn||1))*(H-2*P)]);
+ const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+ el.innerHTML=`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6ff3d" stop-opacity=".35"/><stop offset="1" stop-color="#c6ff3d" stop-opacity="0"/></linearGradient></defs><path d="${d} L${W-P} ${H} L${P} ${H} Z" fill="url(#g${id})"/><path d="${d}" fill="none" stroke="#c6ff3d" stroke-width="3" stroke-linejoin="round"/>`+pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#ffc94d"/>`).join('');
+ $(id+'-l').textContent=series[0].year+' → '+series[series.length-1].year+' · '+fmtv(series[series.length-1].value);}
+(async()=>{
+ try{const f=await j('/v1/fuel/latest');$('s-g92').textContent=f.prices.gasoline_92.price;}catch(e){$('s-g92').textContent='–'}
+ try{const x=await j('/v1/fx/latest?symbols=USD');$('s-usd').textContent=fmt(x.rates_egp.USD);}catch(e){$('s-usd').textContent='–'}
+ try{const i=await j('/v1/macro/inflation?from_year=2015');$('s-inf').innerHTML=fmt(i.latest.value,1)+'<span>% ('+i.latest.year+')</span>';spark('c-inf',i.series,v=>fmt(v,1)+'%');}catch(e){$('s-inf').textContent='–'}
+ try{const r=await j('/v1/macro/remittances?from_year=2015');$('s-rem').innerHTML='$'+fmt(r.latest.value/1e9,1)+'<span>B ('+r.latest.year+')</span>';spark('c-rem',r.series.map(s=>({year:s.year,value:s.value/1e9})),v=>'$'+fmt(v,1)+'B');}catch(e){$('s-rem').textContent='–'}
+})();
+const eps=[['⛽ Fuel','/v1/fuel/latest'],['💱 USD / EUR / SAR','/v1/fx/latest?symbols=USD,EUR,SAR'],['📅 FX 2026-01-05','/v1/fx/2026-01-05?symbols=USD'],['📈 Inflation','/v1/macro/inflation?from_year=2020'],['👥 Population','/v1/macro/population?from_year=2020'],['✈️ Remittances','/v1/macro/remittances?from_year=2020']];
+const tabs=$('tabs');
+async function run(i){[...tabs.children].forEach((b,k)=>b.classList.toggle('on',k===i));$('purl').textContent='GET '+location.origin+eps[i][1];$('pout').textContent='…';try{$('pout').textContent=JSON.stringify(await j(eps[i][1]),null,2)}catch(e){$('pout').textContent='error'}}
+eps.forEach((e,i)=>{const b=document.createElement('button');b.textContent=e[0];b.onclick=()=>run(i);tabs.appendChild(b)});run(0);
+</script>
+</body>
+</html>
