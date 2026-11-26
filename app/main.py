@@ -5,7 +5,7 @@ import datetime as dt
 import json
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request, Query
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from . import sources
 
 app = FastAPI(
@@ -62,11 +62,7 @@ async def limit(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home():
-    return (
-        "<h1>Egypt Open Data API</h1><p>Official fuel prices, EGP reference rates and World Bank macro series for Egypt, as clean JSON.</p>"
-        "<p><a href='/docs'>Interactive docs</a> | <a href='/v1/sources'>Sources and licenses</a> | "
-        "<a href='/v1/fuel/latest'>Try: fuel prices</a></p>"
-    )
+    return FileResponse(Path(__file__).resolve().parent / "static" / "index.html")
 
 
 @app.get("/health", include_in_schema=False)
