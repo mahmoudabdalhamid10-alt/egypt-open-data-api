@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ديمو: موظف استقبال واتساب بالذكاء الاصطناعي</title>
+<title>نموذج تجريبي: مساعد ردود واتساب</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0b0f0a;color:#f2f5ee;font-family:"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 12px}
@@ -31,32 +31,35 @@ form button{background:#c6ff3d;border:0;color:#0b0f0a;font-weight:700;border-rad
 .card{background:#182019;border:1px solid #26332b;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:14px;line-height:1.6}
 .card.h{border-color:#ff9f43}.card b{color:#c6ff3d}.card.h b{color:#ff9f43}
 .empty{color:#6b7566;font-size:13px}
+.modes{display:flex;gap:8px;margin-bottom:14px}.modes button{background:transparent;border:1px solid #c6ff3d;color:#c6ff3d;border-radius:16px;padding:7px 16px;font-family:inherit;cursor:pointer}.modes button.on{background:#c6ff3d;color:#0b0f0a}.fake{color:#ff9f43;font-size:12px;padding:6px 12px;background:#1a2b22;text-align:center}
 .note{color:#6b7566;font-size:12px;margin-top:14px;text-align:center;max-width:640px}
 </style>
 </head>
 <body>
-<h1>موظف استقبال واتساب <span>بالذكاء الاصطناعي</span></h1>
-<p class="sub">ديمو تجريبي لعيادة أسنان وهمية. جرّب تكلمه زي ما العميل بيكلم العيادة: اسأل عن الأسعار، احجز، أو اشتكي من وجع. على اليمين بتشوف اللي بيوصل لموظف العيادة.</p>
+<h1>نموذج تجريبي لمساعد ردود <span>على واتساب</span></h1>
+<p class="sub">ده نموذج (Prototype) بيشتغل في المتصفح بس، لتوضيح فكرة تجربة محتملة على واتساب. مش خدمة واتساب شغالة حالياً، ومفيش رسايل بتتبعت لحد.</p>
+<div class="modes"><button id="m1" class="on">عيادة أسنان (مثال)</button><button id="m2">مكتب عقارات (مثال)</button></div>
 <div class="wrap">
  <div class="phone">
   <div class="top"><div class="av">ع</div><div><b>عيادة الابتسامة (تجريبي)</b><small>متصل الآن</small></div></div>
   <div id="chat"></div>
   <div class="chips" id="chips"></div>
-  <form id="f"><input id="t" autocomplete="off" placeholder="اكتب رسالتك..."><button>إرسال</button></form>
+  <div class="fake">بيانات وهمية للتجربة فقط. اكتب اسم ورقم وأعراض وهمية، ومفيش حاجة بتتخزن أو بتتبعت.</div>
+  <form id="f"><input id="t" autocomplete="off" placeholder="اكتب رسالة تجريبية..."><button>إرسال</button></form>
  </div>
  <div class="panel">
-  <h2>لوحة موظف العيادة</h2>
-  <p class="s">اللي الموظف شايفه في نفس اللحظة</p>
+  <h2 id="ptitle">لوحة موظف العيادة</h2>
+  <p class="s">اللي الموظف هيشوفه (محاكاة)</p>
   <div id="log"><div class="empty">لسه مفيش حجوزات أو تحويلات.</div></div>
  </div>
 </div>
-<p class="note">ديمو بيانات وهمية. الرد هنا بقواعد مكتوبة مسبقاً لتوضيح الفكرة. في النسخة الحقيقية الرد بيمشي على واتساب بالأعمال، بمعلومات عيادتك أنت، ومربوط بجدول مواعيدك.</p>
+<p class="note">نموذج تجريبي ببيانات وهمية. الردود هنا قواعد مكتوبة مسبقاً لتوضيح الفكرة، مش ذكاء اصطناعي شغال ولا واتساب حقيقي. أي تجربة فعلية على واتساب هتتعمل بعد الاتفاق، ببيانات نشاطك أنت، وبتتطلب حساب واتساب للأعمال خاص بيكم.</p>
 <script>
 const chat=document.getElementById('chat'),chips=document.getElementById('chips'),log=document.getElementById('log');
 const DAYS=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
 const TIMES=["4:00 م","5:00 م","6:30 م","8:00 م"];
 const SERV={"كشف":"كشف وتشخيص (300 ج)","تنظيف":"تنظيف وتلميع (500 ج)","حشو":"حشو تجميلي (700 ج)","تبييض":"تبييض أسنان (2000 ج)","تقويم":"استشارة تقويم (300 ج)"};
-let st={step:"idle"},first=true;
+let st={step:"idle"},first=true,MODE='clinic';
 function add(txt,who){const d=document.createElement('div');d.className='m '+who;d.textContent=txt;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
 function setChips(a){chips.innerHTML='';a.forEach(x=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>send(x);chips.appendChild(b)})}
 function card(cls,html){if(log.querySelector('.empty'))log.innerHTML='';const c=document.createElement('div');c.className='card '+cls;c.innerHTML=html;log.prepend(c)}
@@ -68,12 +71,43 @@ function handoff(reason,msg){
   card('h',`<b>تحويل لموظف</b><br>السبب: ${esc(reason)}<br>رسالة العميل: «${esc(msg)}»<br>ملخص: العميل محتاج رد بشري. المحادثة كلها متسجلة.`);
   st={step:"idle"};
 }
+const REMAIN=["شقق للبيع","شقق للإيجار","طلب معاينة","كلم موظف"];
+function sendRE(t){
+  const n=t.replace(/[أإآ]/g,'ا').replace(/ة/g,'ه');
+  switch(st.step){
+   case "area":st.area=t;st.step="budget";return bot("وميزانيتك التقريبية كام؟ (اكتب رقم وهمي)");
+   case "budget":st.budget=t;st.step="name";return bot("تمام. اسمك إيه؟ (اكتب اسم وهمي)");
+   case "name":st.name=t;st.step="phone";return bot(`أهلاً يا ${t}. رقم موبايلك عشان الموظف يتواصل معاك؟ (اكتب رقم وهمي)`);
+   case "phone":{
+    const d=t.replace(/\D/g,'');if(d.length<10)return bot("الرقم ناقص، ابعته 11 رقم وهمي (مثال: 01xxxxxxxxx):");
+    card('',`<b>طلب عميل جديد</b><br>${esc(st.name)} (${esc(d)})<br>${esc(st.kind)} في ${esc(st.area)}<br>الميزانية: ${esc(st.budget)}<br><small>(محاكاة) متسجل كعميل محتمل للموظف</small>`);
+    const s=st;st={step:"idle"};
+    return bot(`تمام يا ${s.name}، سجلت طلبك (${s.kind} في ${s.area}) وموظف المكتب هيتواصل معاك. (محاكاة: مفيش حاجة اتبعتت فعلاً.)`,REMAIN);}
+  }
+  if(has(n,["سعر","بكام","كام","متر"])){return bot("الأسعار بتختلف حسب المنطقة والمساحة والدور، والموظف هو اللي بيأكد السعر الحالي. (نموذج تجريبي بدون أسعار حقيقية.) تحب أسجل طلبك؟",["شقق للبيع","شقق للإيجار","كلم موظف"]);}
+  if(has(n,["للبيع","تمليك","اشتري","شراء","بيع"])){st.kind="شقة للبيع";st.step="area";return bot("تمام، شقة للتمليك. تحب في أنهي منطقة؟");}
+  if(has(n,["ايجار","اجار","استاجر"])){st.kind="شقة للإيجار";st.step="area";return bot("تمام، شقة للإيجار. تحب في أنهي منطقة؟");}
+  if(has(n,["معاينه","معاينة","اشوف","زياره"])){st.kind="طلب معاينة";st.step="area";return bot("أكيد. عايز تعاين في أنهي منطقة؟");}
+  if(has(n,["كلم موظف","موظف","سمسار","مدير","شخص","شكوى"])){card('h',`<b>تحويل لموظف</b><br>رسالة العميل: «${esc(t)}»`);return bot("(محاكاة) حولتك لموظف المكتب. في التجربة الفعلية الموظف بيشوف المحادثة كاملة.",REMAIN);}
+  if(has(n,["شكرا","تسلم"]))return bot("العفو! في خدمتك 🙏",REMAIN);
+  if(has(n,["السلام","اهلا","مرحبا","صباح","مساء","ازيك"]))return bot("أهلاً بحضرتك في مكتب النور العقاري (مثال تجريبي). تحب تسأل عن إيه؟",REMAIN);
+  card('h',`<b>تحويل لموظف</b><br>سؤال خارج المتاح: «${esc(t)}»`);
+  bot("مش متأكد من الإجابة وماحبش أديك معلومة غلط، فسجلتها للموظف (محاكاة). أقدر أساعدك في:",REMAIN);
+}
+function setMode(m){MODE=m;st={step:"idle"};chat.innerHTML='';chips.innerHTML='';log.innerHTML='<div class="empty">لسه مفيش طلبات أو تحويلات.</div>';
+  document.getElementById('m1').className=m==='clinic'?'on':'';document.getElementById('m2').className=m==='re'?'on':'';
+  document.querySelector('.top b').textContent=m==='clinic'?'عيادة الابتسامة (تجريبي)':'مكتب النور العقاري (تجريبي)';
+  document.getElementById('ptitle').textContent=m==='clinic'?'لوحة موظف العيادة':'لوحة موظف المكتب';
+  if(m==='clinic'){add("أهلاً بحضرتك في عيادة الابتسامة 👋 ده نموذج تجريبي ببيانات وهمية: بجاوب على أسئلة الأسعار والمواعيد وبوريك إزاي ممكن يتسجل حجز.",'bot');setChips(MAIN)}
+  else{add("أهلاً بحضرتك في مكتب النور العقاري 👋 ده نموذج تجريبي ببيانات وهمية: بجاوب على الاستفسارات وبسجل طلب العميل للموظف.",'bot');setChips(REMAIN)}}
+document.getElementById('m1').onclick=()=>setMode('clinic');document.getElementById('m2').onclick=()=>setMode('re');
 function send(raw){
   const t=raw.trim();if(!t)return;add(t,'me');chips.innerHTML='';
+  if(MODE==='re')return sendRE(t);
   const n=t.replace(/[أإآ]/g,'ا').replace(/ة/g,'ه');
   if(has(n,["وجع","ورم","نزيف","الم شديد","بيوجع","صديد","حمي","حمى","طوارئ","اسعاف"])&&st.step==="idle"){
     handoff("حالة طبية محتاجة تقييم الدكتور",t);
-    return bot("ألف سلامة عليك. الحالة دي لازم الدكتور يتابعها بنفسه، فحولتك لموظف العيادة دلوقتي وهيتواصل معاك في أقرب وقت. لو الألم شديد أو في ورم أو نزيف روح أقرب طوارئ.",["احجز كشف"]);
+    return bot("ألف سلامة عليك. الحالة دي لازم الدكتور يتابعها بنفسه، (محاكاة تحويل لموظف.) لو الألم شديد أو في ورم أو نزيف روح أقرب طوارئ.",["احجز كشف"]);
   }
   switch(st.step){
    case "service":{
@@ -87,16 +121,16 @@ function send(raw){
    case "time":{
     const m=TIMES.find(x=>n.includes(x.split(" ")[0].replace(":00","")));
     if(!m)return bot("اختار ميعاد من المتاح:",TIMES);
-    st.time=m;st.step="name";return bot("تمام. اسمك إيه؟");}
+    st.time=m;st.step="name";return bot("تمام. اسمك إيه؟ (اكتب اسم وهمي)");}
    case "name":
-    st.name=t;st.step="phone";return bot(`أهلاً يا ${t}. رقم موبايلك للتأكيد؟`);
+    st.name=t;st.step="phone";return bot(`أهلاً يا ${t}. رقم موبايلك للتأكيد؟ (اكتب رقم وهمي)`);
    case "phone":{
     const digits=t.replace(/\D/g,'');
     if(digits.length<10)return bot("الرقم ناقص، ابعته 11 رقم (مثال: 01xxxxxxxxx):");
     st.phone=digits;
-    card('',`<b>حجز جديد</b><br>${esc(st.name)} (${esc(st.phone)})<br>${esc(st.service)}<br>${st.day} الساعة ${st.time}<br><small>تذكير هيتبعت قبلها بيوم وبساعتين</small>`);
+    card('',`<b>حجز جديد</b><br>${esc(st.name)} (${esc(st.phone)})<br>${esc(st.service)}<br>${st.day} الساعة ${st.time}<br><small>(محاكاة) في التجربة الفعلية ممكن يتبعت تذكير قبل الميعاد</small>`);
     const s=st;st={step:"idle"};
-    return bot(`تم حجزك يا ${s.name} ✅\n${s.service}\nيوم ${s.day} الساعة ${s.time}\nهبعتلك تذكير قبلها بيوم. لو عايز تلغي أو تغير الميعاد اكتبلي هنا.`,["الأسعار","كلم موظف"]);}
+    return bot(`تم حجزك يا ${s.name} ✅\n${s.service}\nيوم ${s.day} الساعة ${s.time}\n(محاكاة: في التجربة الفعلية ممكن يوصلك تذكير قبل الميعاد.) لو عايز تلغي أو تغير الميعاد اكتبلي هنا.`,["الأسعار","كلم موظف"]);}
   }
   if(has(n,["الغي","الغاء","تغيير الميعاد","غير الميعاد","اجل","تاجيل"])){
     card('h',`<b>طلب تغيير/إلغاء</b><br>رسالة العميل: «${esc(t)}»`);
@@ -109,14 +143,14 @@ function send(raw){
     return bot("العيادة (عنوان تجريبي): ش الجمهورية، أعلى صيدلية النور، الدور الثاني.\nالمواعيد: السبت للخميس من 4 م إلى 10 م. الجمعة إجازة.",["احجز كشف","الأسعار"]);
   if(has(n,["كلم موظف","موظف","دكتور","شخص","استفسار","شكوى"])){
     handoff("العميل طلب موظف",t);
-    return bot("حاضر، حولتك لموظف العيادة وهيرد عليك هنا في ساعات العمل. سجلتله ملخص محادثتنا عشان متعيدش كلامك.",MAIN);}
+    return bot("حاضر، (محاكاة) حولتك لموظف العيادة وهيرد عليك. في التجربة الفعلية الموظف بيشوف ملخص المحادثة.",MAIN);}
   if(has(n,["شكرا","تسلم","ميرسي"]))return bot("العفو! في خدمتك دايماً 🙏",MAIN);
   if(has(n,["السلام","اهلا","مرحبا","صباح","مساء","هاي","ازيك","hello"]))return bot("أهلاً وسهلاً! أنا مساعد عيادة الابتسامة. أقدر أساعدك في الحجز والأسعار والمواعيد. تحب إيه؟",MAIN);
   handoff("سؤال خارج المعلومات المتاحة",t);
   bot("مش متأكد من إجابة السؤال ده وماحبش أقولك معلومة غلط، فحولته لموظف العيادة هيرد عليك. في الوقت ده أقدر أساعدك في:",MAIN);
 }
 document.getElementById('f').onsubmit=e=>{e.preventDefault();const i=document.getElementById('t');send(i.value);i.value=''};
-add("أهلاً بحضرتك في عيادة الابتسامة 👋 أنا المساعد الذكي. أرد على استفساراتك وأحجزلك ميعاد في أي وقت، حتى بره مواعيد العمل.",'bot');setChips(MAIN);
+setMode('clinic');
 </script>
 </body>
 </html>
