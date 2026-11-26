@@ -1,0 +1,13 @@
+[
+ {
+  "date": "2026-11-26",
+  "prices": {
+   "kerosene": 20.5,
+   "diesel": 20.5,
+   "lpg_cylinder": 275.0,
+   "gasoline_80": 20.75,
+   "gasoline_95": 24.0,
+   "gasoline_92": 22.25
+  }
+ }
+]
