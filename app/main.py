@@ -65,6 +65,11 @@ def home():
     return FileResponse(Path(__file__).resolve().parent / "static" / "index.html")
 
 
+@app.get("/demo", response_class=HTMLResponse, include_in_schema=False)
+def demo():
+    return FileResponse(Path(__file__).resolve().parent / "static" / "2-demo.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"ok": True}
