@@ -106,6 +106,15 @@ def ask_page():
     return FileResponse(Path(__file__).resolve().parent / "static" / "ask.html")
 
 
+PACK_PRICE_EGP = os.getenv("PACK_PRICE_EGP", "150")  # the one place the data pack price lives
+
+
+@app.get("/pack", response_class=HTMLResponse, include_in_schema=False)
+def pack_page():
+    html = (Path(__file__).resolve().parent / "static" / "pack.html").read_text(encoding="utf-8")
+    return HTMLResponse(html.replace("__PRICE__", PACK_PRICE_EGP))
+
+
 @app.get("/pricing", response_class=HTMLResponse, include_in_schema=False)
 def pricing():
     return FileResponse(Path(__file__).resolve().parent / "static" / "pricing.html")
