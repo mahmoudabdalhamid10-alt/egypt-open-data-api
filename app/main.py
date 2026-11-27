@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from . import sources
+from . import ask as ask_mod
 
 app = FastAPI(
     title="Egypt Open Data API",
@@ -17,6 +18,8 @@ app = FastAPI(
         "Every response names its source and license."
     ),
 )
+
+app.include_router(ask_mod.router)
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 FREE_DAILY_LIMIT = int(os.getenv("FREE_DAILY_LIMIT", "100"))
@@ -96,6 +99,11 @@ def home():
 @app.get("/demo", response_class=HTMLResponse, include_in_schema=False)
 def demo():
     return FileResponse(Path(__file__).resolve().parent / "static" / "2-demo.html")
+
+
+@app.get("/ask", response_class=HTMLResponse, include_in_schema=False)
+def ask_page():
+    return FileResponse(Path(__file__).resolve().parent / "static" / "ask.html")
 
 
 @app.get("/pricing", response_class=HTMLResponse, include_in_schema=False)
