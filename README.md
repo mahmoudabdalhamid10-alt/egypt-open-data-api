@@ -2,6 +2,8 @@
 
 Clean JSON for public Egyptian data, one simple API, with the source and license named in every response.
 
+**Live:** https://egypt-open-data-api.onrender.com/ , interactive docs at https://egypt-open-data-api.onrender.com/docs (free server, the first request can take about a minute to wake).
+
 | Dataset | Endpoint | Source | License / terms |
 |---|---|---|---|
 | Official fuel prices | `/v1/fuel/latest`, `/v1/fuel/history` | Ministry of Petroleum and Mineral Resources | Official public prices, cited |
