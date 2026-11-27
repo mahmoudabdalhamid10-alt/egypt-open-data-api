@@ -21,6 +21,13 @@ app = FastAPI(
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 FREE_DAILY_LIMIT = int(os.getenv("FREE_DAILY_LIMIT", "100"))
 PROXY_SECRET = os.getenv("RAPIDAPI_PROXY_SECRET", "")
+# Manual paid keys: env API_KEYS = {"<key>": "pro" | "ultra"}. Added by hand after a confirmed payment.
+try:
+    API_KEYS = json.loads(os.getenv("API_KEYS", "{}") or "{}")
+except Exception:
+    API_KEYS = {}
+PLAN_DAILY = {"pro": 400, "ultra": 4000}
+_key_hits: dict[tuple[str, str], int] = {}
 _cache: dict[str, tuple[float, object]] = {}
 _hits: dict[tuple[str, str], int] = {}
 
@@ -48,6 +55,21 @@ async def limit(request: Request, call_next):
     path = request.url.path
     if path.startswith("/v1/"):
         via_rapid = bool(PROXY_SECRET) and request.headers.get("x-rapidapi-proxy-secret") == PROXY_SECRET
+        key = request.headers.get("x-api-key")
+        if key:
+            plan = API_KEYS.get(key)
+            if not plan:
+                return JSONResponse({"error": "invalid API key"}, status_code=401)
+            if path.startswith("/v1/fuel"):
+                return JSONResponse({"error": "fuel data is not included in paid plans (source redistribution terms unverified)"}, status_code=403)
+            day = dt.date.today().isoformat()
+            kk = (key, day)
+            _key_hits[kk] = _key_hits.get(kk, 0) + 1
+            for old in [x for x in _key_hits if x[1] != day]:
+                _key_hits.pop(old, None)
+            if _key_hits[kk] > PLAN_DAILY.get(plan, 0):
+                return JSONResponse({"error": f"daily limit for plan {plan} reached"}, status_code=429)
+            return await call_next(request)
         if via_rapid and path.startswith("/v1/fuel") and request.headers.get("x-rapidapi-subscription", "").strip().lower() != "basic":
             return JSONResponse({"error": "fuel data is not included in paid plans (source redistribution terms unverified); available on the free BASIC plan"}, status_code=403)
         if not via_rapid:
@@ -70,6 +92,11 @@ def home():
 @app.get("/demo", response_class=HTMLResponse, include_in_schema=False)
 def demo():
     return FileResponse(Path(__file__).resolve().parent / "static" / "2-demo.html")
+
+
+@app.get("/pricing", response_class=HTMLResponse, include_in_schema=False)
+def pricing():
+    return FileResponse(Path(__file__).resolve().parent / "static" / "pricing.html")
 
 
 @app.get("/health", include_in_schema=False)
