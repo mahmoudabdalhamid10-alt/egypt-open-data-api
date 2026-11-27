@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>أسعار Egypt Open Data API</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0b0f0a;color:#f2f5ee;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:32px 16px;line-height:1.6}
+.w{max-width:960px;margin:0 auto}
+h1{font-size:30px}h1 span{color:#c6ff3d}
+.sub{color:#9aa592;margin:6px 0 28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:#141a12;border:1px solid #243020;border-radius:16px;padding:22px}
+.card.hot{border-color:#c6ff3d}
+.card h2{font-size:20px}.price{font-size:34px;font-weight:800;color:#c6ff3d;margin:8px 0}
+.price small{font-size:14px;color:#9aa592;font-weight:400}
+ul{list-style:none;margin-top:10px}li{padding:4px 0;color:#d6dccf}li:before{content:"✓ ";color:#c6ff3d}
+.steps{margin-top:32px;background:#141a12;border-radius:16px;padding:22px;border:1px solid #243020}
+.steps ol{padding-inline-start:22px;margin-top:10px}.steps li:before{content:""}
+.num{background:#0b0f0a;border:1px dashed #c6ff3d;border-radius:10px;padding:10px 14px;display:inline-block;margin:6px 0;font-size:20px;direction:ltr}
+.note{color:#9aa592;font-size:13px;margin-top:20px}
+code{background:#0b0f0a;padding:2px 6px;border-radius:6px;direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Egypt Open Data API <span>الأسعار</span></h1>
+<p class="sub">بيانات مصرية نضيفة بصيغة JSON: أسعار صرف يومية وبيانات اقتصاد كلي من البنك الدولي. كل رد فيه المصدر والترخيص.</p>
+<div class="grid">
+<div class="card"><h2>مجاني</h2><div class="price">0 <small>جنيه</small></div>
+<ul><li>100 طلب في اليوم</li><li>أسعار الصرف</li><li>بيانات البنك الدولي</li><li>أسعار الوقود</li></ul></div>
+<div class="card hot"><h2>Pro</h2><div class="price">499 <small>جنيه / شهر</small></div>
+<ul><li>حوالي 400 طلب في اليوم</li><li>أسعار الصرف</li><li>بيانات البنك الدولي</li><li>مفتاح API خاص بيك</li></ul></div>
+<div class="card"><h2>Ultra</h2><div class="price">1,599 <small>جنيه / شهر</small></div>
+<ul><li>حوالي 4,000 طلب في اليوم</li><li>أسعار الصرف</li><li>بيانات البنك الدولي</li><li>مفتاح API خاص بيك</li></ul></div>
+</div>
+<div class="steps"><h2>إزاي تشترك</h2>
+<ol>
+<li>حوّل قيمة الباقة على فودافون كاش على الرقم: <div class="num">01032479651</div></li>
+<li>ابعت صورة التحويل مع اسم الباقة على: قريبا</li>
+<li>بعد ما نتأكد من التحويل بنبعتلك مفتاح API خلال يوم عمل.</li>
+<li>استخدمه في كل طلب: <code>X-API-Key: your_key</code></li>
+</ol></div>
+<p class="note">الاشتراك شهري ويتجدد بتحويل جديد. بيانات أسعار الوقود مش داخلة في الباقات المدفوعة حاليا (متاحة في الباقة المجانية). الأسعار قابلة للتغيير. كل بيانات مصدرها جهات رسمية ومفتوحة، والتفاصيل في /v1/sources.</p>
+</div>
+</body>
+</html>
