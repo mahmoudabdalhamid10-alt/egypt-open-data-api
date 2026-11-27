@@ -21,7 +21,8 @@ app = FastAPI(
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 FREE_DAILY_LIMIT = int(os.getenv("FREE_DAILY_LIMIT", "100"))
 PROXY_SECRET = os.getenv("RAPIDAPI_PROXY_SECRET", "")
-# Manual paid keys: env API_KEYS = {"<key>": "pro" | "ultra"}. Added by hand after a confirmed payment.
+# Manual paid keys: env API_KEYS = {"<key>": "pro" | "ultra"}, or "pro|YYYY-MM-DD" to expire after that date.
+# Added by hand after a confirmed wallet credit.
 try:
     API_KEYS = json.loads(os.getenv("API_KEYS", "{}") or "{}")
 except Exception:
@@ -60,6 +61,9 @@ async def limit(request: Request, call_next):
             plan = API_KEYS.get(key)
             if not plan:
                 return JSONResponse({"error": "invalid API key"}, status_code=401)
+            plan, _, until = str(plan).partition("|")
+            if until and dt.date.today().isoformat() > until:
+                return JSONResponse({"error": f"API key expired on {until}; renew by a new transfer, see /pricing"}, status_code=401)
             if path.startswith("/v1/fuel"):
                 return JSONResponse({"error": "fuel data is not included in paid plans (source redistribution terms unverified)"}, status_code=403)
             day = dt.date.today().isoformat()
